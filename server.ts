@@ -30,77 +30,127 @@ if (apiKey) {
   });
 }
 
-// Fallback outdoor challenges library if API is unavailable or rate-limited
+// Fallback outdoor challenges library with high diversity (Sky, Textures, Colors, Shadows, Botany)
 const CURATED_FALLBACK_CHALLENGES = [
   {
+    id: 'fb-sky-clouds',
+    title: 'Frame a Towering Cloud Edge',
+    description: 'Step out into open air, look straight up at the sky, and capture a clean, wide photo framing the edge of a cloud against the daylight.',
+    suggestedDurationMinutes: 2,
+    evidenceType: 'photo' as const,
+    category: 'light_sky' as const,
+    safetyTip: 'Never look directly at the sun. Protect your eyes.',
+    tags: ['sky', 'clouds', 'daylight'],
+  },
+  {
+    id: 'fb-sky-canopy',
+    title: 'Tree Canopy Against the Open Sky',
+    description: 'Stand under or near a tree. Point your camera upwards to capture branches and leaves creating silhouettes against the open sky.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'light_sky' as const,
+    safetyTip: 'Watch your footing while looking up at the sky.',
+    tags: ['sky', 'canopy', 'silhouette'],
+  },
+  {
+    id: 'fb-longest-shadow',
+    title: 'Track the Longest Daylight Shadow',
+    description: 'Look across the ground, sidewalk, or lawn. Find the longest or sharpest shadow cast by a fence, post, or tree, and photograph the projection.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'light_sky' as const,
+    safetyTip: 'Stay on clear walking pathways and remain aware of your surroundings.',
+    tags: ['shadows', 'sunlight', 'geometry'],
+  },
+  {
+    id: 'fb-sky-reflection',
+    title: 'Catch the Sky in a Reflection',
+    description: 'Find a puddle, damp stone, car hood, or outdoor windowpane that reflects the clouds or blue sky like an outdoor mirror.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'light_sky' as const,
+    safetyTip: 'Watch your balance around wet surfaces.',
+    tags: ['reflection', 'sky', 'water'],
+  },
+  {
     id: 'fb-leaf-shape',
-    title: 'Find a Leaf with a Distinctive Shape',
-    description: 'Step outside to a nearby plant, shrub, or tree. Find and photograph a single leaf that has an unusual, jagged, or asymmetric silhouette.',
+    title: 'Find an Asymmetric or Jagged Leaf',
+    description: 'Step outside to a nearby plant or tree. Find and photograph a single leaf that has an unusual, serrated, or lobed edge.',
     suggestedDurationMinutes: 3,
     evidenceType: 'photo' as const,
     category: 'botany' as const,
-    safetyTip: 'Stay on clear walking paths and do not touch any plants you cannot identify.',
-    tags: ['leaves', 'nature', 'botany'],
+    safetyTip: 'Stay on designated pathways and do not touch unknown thorny plants.',
+    tags: ['leaves', 'botany', 'margins'],
   },
   {
     id: 'fb-bark-texture',
-    title: 'Capture Intricate Tree Bark Texture',
-    description: 'Walk outside to the closest tree. Get a close-up photograph of the natural ridges, moss, or peeling patterns along its bark.',
-    suggestedDurationMinutes: 4,
+    title: 'Tree Bark Mountain Ranges',
+    description: 'Walk to the closest tree. Get a macro photograph of the deep ridges, lichen, or peeling patterns along its bark.',
+    suggestedDurationMinutes: 3,
     evidenceType: 'photo' as const,
     category: 'textures' as const,
-    safetyTip: 'Look around your footing for roots and uneven ground before taking your photo.',
+    safetyTip: 'Watch for exposed tree roots on the ground before snapping.',
     tags: ['trees', 'texture', 'macro'],
+  },
+  {
+    id: 'fb-non-green-hunt',
+    title: 'Find a Non-Green Natural Color',
+    description: 'Scan your outdoor surroundings for a plant, leaf, berry, or flower showing vivid natural rust-red, ochre-yellow, purple, or brown.',
+    suggestedDurationMinutes: 4,
+    evidenceType: 'photo' as const,
+    category: 'color_hunt' as const,
+    safetyTip: 'Observe berries and wildflowers without picking or tasting them.',
+    tags: ['color', 'observation', 'palette'],
+  },
+  {
+    id: 'fb-sidewalk-moss',
+    title: 'Micro-Forest in a Pavement Crack',
+    description: 'Look down at a sidewalk, patio, or driveway seam. Find tiny green moss or clover pushing through concrete, and photograph the micro-world.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'patterns' as const,
+    safetyTip: 'Crouch safely out of any bicycle or vehicle paths.',
+    tags: ['urban-nature', 'moss', 'patterns'],
+  },
+  {
+    id: 'fb-geometric-branch',
+    title: 'Architectural Branch Y-Fork',
+    description: 'Look up at a shrub or tree. Locate a clean, geometric Y-junction where a limb divides into two balanced branches.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'patterns' as const,
+    safetyTip: 'Keep your eyes protected from low-hanging twigs.',
+    tags: ['branches', 'geometry', 'patterns'],
+  },
+  {
+    id: 'fb-stone-strata',
+    title: 'Sediment Bands in an Outdoor Rock',
+    description: 'Find a garden stone, pebble, or boulder that displays distinct colored layers, mineral stripes, or sparkling flecks.',
+    suggestedDurationMinutes: 3,
+    evidenceType: 'photo' as const,
+    category: 'textures' as const,
+    safetyTip: 'Only inspect stones you can view safely without lifting heavy rocks.',
+    tags: ['rocks', 'minerals', 'textures'],
   },
   {
     id: 'fb-three-greens',
     title: 'Spot Three Distinct Shades of Green',
-    description: 'Scan your outdoor surroundings. Find a scene or plant arrangement that exhibits at least three distinctly different green tones, and capture one focused frame.',
-    suggestedDurationMinutes: 5,
+    description: 'Scan your outdoor surroundings to frame at least three visibly different tones of green in a single composition.',
+    suggestedDurationMinutes: 4,
     evidenceType: 'photo' as const,
     category: 'color_hunt' as const,
-    safetyTip: 'Never step into roads, landscaping barriers, or private yards.',
-    tags: ['color', 'observation', 'palette'],
+    safetyTip: 'Keep on safe paths and take your time.',
+    tags: ['green', 'shades', 'nature'],
   },
   {
-    id: 'fb-cloud-drift',
-    title: 'Observe the Sky & Cloud Architecture',
-    description: 'Step out into open air, look up at the sky for 90 seconds, and capture a photo of an interesting cloud edge, atmospheric depth, or sky contrast.',
+    id: 'fb-dewdrop-prism',
+    title: 'Water Droplets on a Surface',
+    description: 'Find beads of morning moisture, rain droplets, or sprinkler drops resting spherically on a blade of grass or leaf.',
     suggestedDurationMinutes: 3,
-    evidenceType: 'photo' as const,
-    category: 'light_sky' as const,
-    safetyTip: 'Never look directly at the sun. Protect your eyes.',
-    tags: ['sky', 'clouds', 'atmosphere'],
-  },
-  {
-    id: 'fb-natural-pattern',
-    title: 'Find a Naturally Occurring Pattern',
-    description: 'Discover geometry crafted by nature: concentric rings, spiderweb strands, branching veins, ripple marks on soil, or stone layering.',
-    suggestedDurationMinutes: 4,
-    evidenceType: 'photo' as const,
-    category: 'patterns' as const,
-    safetyTip: 'Observe insects and cobwebs from a respectful distance without disturbing them.',
-    tags: ['patterns', 'geometry', 'mindfulness'],
-  },
-  {
-    id: 'fb-ground-perspective',
-    title: 'The Micro-Forest on the Ground',
-    description: 'Crouch down outdoors and take a low-angle photo of moss, small pebbles, or grass blades from the perspective of an ant walking through the wilderness.',
-    suggestedDurationMinutes: 4,
     evidenceType: 'photo' as const,
     category: 'mindfulness' as const,
-    safetyTip: 'Be mindful of your knees and ensure you have stable footing.',
-    tags: ['micro', 'perspective', 'ground'],
-  },
-  {
-    id: 'fb-light-shadow',
-    title: 'Sunlight Filtered Through Foliage',
-    description: 'Find a spot where direct outdoor light filters through branches or leaves to create dancing dapple-light and shadows on the ground or a wall.',
-    suggestedDurationMinutes: 3,
-    evidenceType: 'photo' as const,
-    category: 'light_sky' as const,
-    safetyTip: 'Keep aware of your surroundings and any pedestrian paths.',
-    tags: ['shadows', 'sunlight', 'contrast'],
+    safetyTip: 'Take a calm moment to observe before snapping the photo.',
+    tags: ['dew', 'droplets', 'mindfulness'],
   },
 ];
 
@@ -151,10 +201,94 @@ async function generateWithGemma4(
   throw lastError || new Error('Gemma 4 models unavailable');
 }
 
+// Diverse outdoor observation themes to ensure radical task variety
+const DIVERSE_THEMES = [
+  {
+    theme: "Expansive Sky & Cloud Edge",
+    hint: "Step outside into the open air. Look straight up, frame a towering cloud edge, wispy atmospheric cirrus, or the contrast between daylight and cloud cover.",
+    category: "light_sky",
+  },
+  {
+    theme: "Tree Canopy Against the Sky",
+    hint: "Stand near a tree and point your camera directly upwards to photograph the silhouette of branches and leaves framing the open sky.",
+    category: "light_sky",
+  },
+  {
+    theme: "Sky Reflected in Standing Water",
+    hint: "Find a puddle, damp stone, car windshield, or reflective surface. Frame the upside-down reflection of the sky or clouds on the ground.",
+    category: "light_sky",
+  },
+  {
+    theme: "The Longest Daylight Shadow",
+    hint: "Look across the pavement or lawn. Find the longest or sharpest shadow cast by a fence, post, or branch, capturing the angle of sunlight.",
+    category: "light_sky",
+  },
+  {
+    theme: "Sunlight Filtering Through Leaves",
+    hint: "Find dapple-light dancing through foliage, creating glowing edges on leaves and high-contrast shadow patterns on the ground.",
+    category: "light_sky",
+  },
+  {
+    theme: "Urban Micro-Forest in Sidewalk Seam",
+    hint: "Find tiny resilient moss, clover, or micro-sprouts thriving in a pavement crack or masonry seam. Contrast the hard stone with delicate green life.",
+    category: "patterns",
+  },
+  {
+    theme: "Tree Bark Cartography",
+    hint: "Look closely at the bark of a nearby tree. Find grooves, lichen patches, or texture patterns that resemble topographic mountain ranges or canyon rivers.",
+    category: "textures",
+  },
+  {
+    theme: "Non-Green Wild Color Hunt",
+    hint: "Locate a naturally occurring outdoor color that is NOT green: e.g. rust-red foliage, ochre berries, violet wildflowers, or amber soil.",
+    category: "color_hunt",
+  },
+  {
+    theme: "Geometric Branch Junction (Y-Fork)",
+    hint: "Locate an architectural fork where a branch cleanly splits, or vines create geometric lattice patterns against a structure.",
+    category: "patterns",
+  },
+  {
+    theme: "Mineral Layers in Stone",
+    hint: "Find an outdoor rock, pebble, or stone displaying visible sediment strata, quartz veins, or sparkling mineral flecks.",
+    category: "textures",
+  },
+  {
+    theme: "Contrasting Leaf Margins",
+    hint: "Find two leaves from different plant species side-by-side with opposing edges: one with sharp serrated teeth, one with smooth rounded margins.",
+    category: "botany",
+  },
+  {
+    theme: "Spherical Water Beads or Dewdrops",
+    hint: "Spot morning dew or water droplets resting spherically on a waxy leaf, blade of grass, or spider silk, capturing tiny prism reflections.",
+    category: "mindfulness",
+  },
+  {
+    theme: "Fibonacci Spiral in Cones or Seeds",
+    hint: "Locate an outdoor pinecone, dried seed pod, or dandelion clock displaying geometric spiral whorls or radial symmetry.",
+    category: "patterns",
+  },
+  {
+    theme: "Organic Decomposition Skeleton",
+    hint: "Find a fallen leaf that has decayed into a translucent, delicate lace skeleton, showing the cycle of forest soil regeneration.",
+    category: "botany",
+  },
+  {
+    theme: "Insect Highway Trail",
+    hint: "Observe an ant, beetle, or pollinator moving along soil or bark. Frame their outdoor journey from a respectful distance without disturbing them.",
+    category: "mindfulness",
+  },
+];
+
 // Helper to choose a random fallback
-function getRandomFallbackChallenge() {
-  const index = Math.floor(Math.random() * CURATED_FALLBACK_CHALLENGES.length);
-  const selected = CURATED_FALLBACK_CHALLENGES[index];
+function getRandomFallbackChallenge(preferredCategory?: string) {
+  let list = CURATED_FALLBACK_CHALLENGES;
+  if (preferredCategory) {
+    const filtered = list.filter((c) => c.category === preferredCategory);
+    if (filtered.length > 0) list = filtered;
+  }
+  const index = Math.floor(Math.random() * list.length);
+  const selected = list[index];
   return {
     ...selected,
     id: `challenge-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
@@ -165,49 +299,61 @@ function getRandomFallbackChallenge() {
 // API: Generate fresh outdoor challenge
 app.post('/api/challenge', async (req: Request, res: Response) => {
   try {
-    const { excludeCategories, preferredDuration } = req.body || {};
+    const { category, preferredCategory, excludeCategories } = req.body || {};
+    const targetCategory = category || preferredCategory;
 
     if (!aiClient) {
       console.warn('[TouchGrass API] GEMINI_API_KEY is not set or AI client not ready. Serving curated fallback challenge.');
       return res.json({
-        challenge: getRandomFallbackChallenge(),
+        challenge: getRandomFallbackChallenge(targetCategory),
         source: 'curated_fallback',
         aiEnabled: false,
       });
     }
 
-    const systemPrompt = `You are the challenge generator for TouchGrass (Hacktoberfest 2026 Week 1: "Touch Grass").
-The mission is to encourage humans to physically leave their computer/phone screen, step outside into fresh air, complete a short, delightful outdoor observation, and return to capture camera evidence.
+    // Filter themes if category requested, otherwise pick randomly across all themes
+    let candidateThemes = DIVERSE_THEMES;
+    if (targetCategory) {
+      const matching = DIVERSE_THEMES.filter((t) => t.category === targetCategory);
+      if (matching.length > 0) {
+        candidateThemes = matching;
+      }
+    }
 
-CRITICAL SAFETY & ETHICAL RULES:
-1. Every challenge MUST be achievable by an ordinary person in a typical residential yard, balcony, park, or quiet sidewalk.
-2. ABSOLUTELY NEVER generate tasks involving:
-   - Trespassing or private property entry
-   - Climbing trees, walls, or heights
-   - Walking into traffic, roads, or railway tracks
-   - Approaching or touching wild animals, beehives, or unknown insects
-   - Ingesting, tasting, or touching unknown wild plants or fungi
-   - Running or hazardous physical exertion
-   - Disposing of trash, fires, or water hazard risks
-3. The goal is sensory appreciation: noticing textures, light, colors, botany, patterns, sky, stones, leaves, or morning dew.
-4. Keep the suggested duration realistic for stepping away: 2 to 7 minutes.
-5. Provide a short, practical safety tip for every task.`;
+    // Pick a distinct random theme on every single request
+    const chosenTheme = candidateThemes[Math.floor(Math.random() * candidateThemes.length)];
+    const randomSeed = Math.floor(Math.random() * 1000000);
+
+    const systemPrompt = `You are the creative outdoor challenge generator for TouchGrass (Hacktoberfest 2026 Week 1).
+Your core mission is to inspire humans to step outside into the physical world.
+
+CRITICAL DIVERSITY MANDATE:
+- Do NOT generate generic repeats like "look at leaf veins".
+- The user is specifically assigned to explore this exact unique theme:
+  THEME: "${chosenTheme.theme}"
+  GUIDELINE: "${chosenTheme.hint}"
+  PRIMARY CATEGORY: "${chosenTheme.category}"
+  RANDOM SEED: ${randomSeed}
+
+SAFETY & ETHICAL RULES:
+1. Must be safely achievable in an ordinary yard, sidewalk, park, or balcony.
+2. ABSOLUTELY NEVER require trespassing, climbing heights, stepping into traffic, or touching wild animals.
+3. Keep the outdoor duration realistic: 2 to 5 minutes.`;
 
     const prompt = `${systemPrompt}
 
 TASK:
-Generate a fresh, unique outdoor observation challenge.
-Return JSON strictly in this format:
+Craft a fresh, inspiring outdoor observation challenge focusing on the theme: "${chosenTheme.theme}".
+Return strictly valid JSON in this structure:
 {
-  "title": "Short catchy title (3-5 words)",
-  "description": "Clear outdoor instructions on what to find and observe (1-2 sentences)",
+  "title": "Creative punchy title (3-5 words)",
+  "description": "Sensory outdoor instructions on what to find and how to observe it (1-2 sentences)",
   "suggestedDurationMinutes": 3,
   "evidenceType": "photo",
-  "category": "botany",
-  "safetyTip": "Practical safety reminder (1 sentence)",
-  "tags": ["nature", "outdoors"]
+  "category": "${chosenTheme.category}",
+  "safetyTip": "Practical outdoor safety reminder (1 sentence)",
+  "tags": ["outdoors", "nature"]
 }
-Category must be one of: "botany", "textures", "light_sky", "patterns", "mindfulness", "color_hunt".
 Return JSON only.`;
 
     const { response, model: usedModel } = await generateWithGemma4(aiClient, prompt);

@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   OutdoorChallenge,
+  ChallengeCategory,
   SessionData,
   SessionStatus,
   AIValidationResult,
@@ -117,10 +118,10 @@ export default function App() {
   }, []);
 
   // START NEW SESSION / PLAY
-  const handleStartPlay = async () => {
+  const handleStartPlay = async (category?: ChallengeCategory) => {
     setIsLoadingChallenge(true);
     try {
-      const { challenge } = await fetchOutdoorChallenge();
+      const { challenge } = await fetchOutdoorChallenge({ category });
       const now = Date.now();
       const newSession: SessionData = {
         sessionId: `session-${now}-${Math.random().toString(36).substring(2, 6)}`,
@@ -141,11 +142,11 @@ export default function App() {
   };
 
   // SKIP / GET ANOTHER CHALLENGE (while in session)
-  const handleSkipChallenge = async () => {
+  const handleSkipChallenge = async (category?: ChallengeCategory) => {
     if (!session) return;
     setIsLoadingChallenge(true);
     try {
-      const { challenge } = await fetchOutdoorChallenge();
+      const { challenge } = await fetchOutdoorChallenge({ category });
       const now = Date.now();
       const updated: SessionData = {
         ...session,
@@ -309,6 +310,7 @@ export default function App() {
             onStartPlay={handleStartPlay}
             onOpenAbout={() => setIsAboutOpen(true)}
             isLoadingChallenge={isLoadingChallenge}
+            isDark={theme === 'dark'}
           />
         ) : (
           /* Active Challenge Experience */

@@ -40,13 +40,13 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
       <div className="relative w-full max-w-lg rounded-3xl terra-card p-6 sm:p-9 overflow-hidden shadow-2xl">
         {/* Analyzing / Loading State */}
         {isValidating ? (
           <div className="py-12 text-center flex flex-col items-center justify-center">
             {photoPreview && (
-              <div className="relative w-40 h-40 rounded-2xl overflow-hidden border border-[var(--terra-border-strong)] mb-6 shadow-md">
+              <div className="relative w-44 h-44 rounded-3xl overflow-hidden border-2 border-emerald-500/30 mb-6 shadow-xl shadow-emerald-500/10">
                 <img
                   src={photoPreview}
                   alt="Analyzing capture"
@@ -55,8 +55,8 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
               </div>
             )}
 
-            <div className="w-10 h-10 border-2 border-[var(--terra-accent)] border-t-transparent rounded-full animate-spin mb-4" />
-            <h3 className="font-display text-xl font-bold text-[var(--terra-ink)] mb-2">
+            <div className="w-12 h-12 border-3 border-emerald-400 border-t-transparent rounded-full animate-spin mb-4" />
+            <h3 className="font-display font-bold text-2xl text-gradient-aurora mb-2">
               Evaluating Field Evidence
             </h3>
             <p className="text-xs sm:text-sm text-[var(--terra-ink-secondary)] max-w-xs font-mono">
@@ -66,12 +66,12 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
         ) : validationResult?.passed ? (
           /* SUCCESS STATE */
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--terra-accent-glow)] text-[var(--terra-accent)] text-xs font-mono font-bold uppercase tracking-wider mb-4">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Evidence Confirmed · Verified</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="text-gradient-emerald">Evidence Confirmed · Verified</span>
             </div>
 
-            <h2 className="font-display font-bold text-3xl sm:text-4xl text-[var(--terra-ink)] mb-1">
+            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-gradient-aurora mb-2">
               Mission accomplished.
             </h2>
             <p className="text-xs sm:text-sm text-[var(--terra-ink-secondary)] mb-6 font-mono">
@@ -81,7 +81,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
             {/* Photo preview & chronometer measurements */}
             <div className="flex gap-4 p-4 rounded-2xl bg-[var(--terra-panel-elevated)] border border-[var(--terra-border)] mb-6 items-center">
               {photoPreview && (
-                <div className="w-20 h-20 rounded-xl overflow-hidden border border-[var(--terra-border)] shrink-0">
+                <div className="w-22 h-22 rounded-2xl overflow-hidden border border-emerald-500/20 shrink-0 shadow-md">
                   <img
                     src={photoPreview}
                     alt="Verified evidence"
@@ -96,7 +96,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
                     <Timer className="w-3 h-3 text-[var(--terra-accent)]" />
                     <span>Task Chrono Time</span>
                   </div>
-                  <div className="text-2xl font-chrono font-extrabold text-[var(--terra-accent)]">
+                  <div className="text-3xl font-chrono font-extrabold text-gradient-aurora">
                     {formatDuration(taskSeconds)}
                   </div>
                 </div>
@@ -115,8 +115,8 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
 
             {/* AI Feedback */}
             <div className="p-4 sm:p-5 rounded-2xl bg-[var(--terra-panel)] border border-[var(--terra-border)] mb-6">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--terra-accent)] font-bold mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div className="text-[11px] font-mono uppercase tracking-wider font-bold mb-1.5 flex items-center gap-1.5 text-gradient-emerald">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Gemma 4 Field Assessment</span>
               </div>
               <p className="text-sm text-[var(--terra-ink)] italic leading-relaxed">
@@ -124,11 +124,11 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
               </p>
             </div>
 
-            {/* Actions */}
+            {/* Stylish Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={onPlayAgain}
-                className="flex-1 py-4 px-6 rounded-2xl terra-shutter-btn font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-4 px-6 rounded-full btn-stylish-primary text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg"
               >
                 <span>Begin Next Mission</span>
                 <ArrowRight className="w-4 h-4" />
@@ -136,9 +136,9 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
 
               <button
                 onClick={onDoneForNow}
-                className="py-4 px-6 rounded-2xl bg-[var(--terra-panel)] hover:bg-[var(--terra-panel-elevated)] border border-[var(--terra-border)] text-[var(--terra-ink)] font-display font-bold text-sm transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+                className="py-4 px-6 rounded-full btn-stylish-secondary text-sm flex items-center justify-center gap-2"
               >
-                <Trees className="w-4 h-4 text-[var(--terra-accent)]" />
+                <Trees className="w-4 h-4 text-emerald-400" />
                 <span>Rest Outdoors</span>
               </button>
             </div>
@@ -146,12 +146,12 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
         ) : (
           /* REJECTED / RETRY STATE */
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-mono font-bold uppercase tracking-wider mb-4">
-              <XCircle className="w-4 h-4" />
-              <span>Evidence Inconclusive</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+              <XCircle className="w-4 h-4 text-amber-400" />
+              <span className="text-gradient-amber">Evidence Inconclusive</span>
             </div>
 
-            <h2 className="font-display font-bold text-3xl text-[var(--terra-ink)] mb-2">
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-gradient-amber mb-2">
               Not quite yet.
             </h2>
             <p className="text-sm text-[var(--terra-ink-secondary)] mb-6 leading-relaxed">
@@ -159,7 +159,7 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
             </p>
 
             <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-6">
-              <div className="text-[11px] font-mono uppercase font-bold text-amber-700 dark:text-amber-300 mb-1">
+              <div className="text-[11px] font-mono uppercase font-bold text-amber-500 mb-1">
                 Gemma 4 Guidance
               </div>
               <p className="text-sm text-[var(--terra-ink)] leading-relaxed">
@@ -172,10 +172,10 @@ export const ValidationModal: React.FC<ValidationModalProps> = ({
 
             <button
               onClick={onRetryCapture}
-              className="w-full py-4 px-6 rounded-2xl terra-shutter-btn font-display font-bold text-base flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 px-6 rounded-full btn-stylish-camera text-base flex items-center justify-center gap-2 shadow-xl"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Try Again with Photo Camera</span>
+              <span>Click Photo Again with Camera</span>
             </button>
           </div>
         )}

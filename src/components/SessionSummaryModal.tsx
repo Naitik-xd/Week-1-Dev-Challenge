@@ -4,7 +4,6 @@ import {
   Trees,
   Sparkles,
   X,
-  CheckCircle2,
 } from 'lucide-react';
 import { SessionData } from '../types';
 import { formatDetailedDuration } from '../utils/timeFormat';
@@ -31,22 +30,22 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
   const latestTask = completedList[completedList.length - 1];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
       <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl terra-card p-6 sm:p-9 text-left shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 w-8 h-8 rounded-full bg-[var(--terra-panel)] hover:bg-[var(--terra-panel-elevated)] border border-[var(--terra-border)] flex items-center justify-center text-[var(--terra-ink-secondary)] hover:text-[var(--terra-ink)] transition-colors cursor-pointer"
+          className="absolute top-6 right-6 w-9 h-9 rounded-full bg-[var(--terra-panel)] hover:bg-[var(--terra-panel-elevated)] border border-[var(--terra-border)] flex items-center justify-center text-[var(--terra-ink-secondary)] hover:text-[var(--terra-ink)] transition-colors cursor-pointer"
           aria-label="Close summary"
         >
           <X className="w-4 h-4" />
         </button>
 
-        <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[var(--terra-accent)] font-bold mb-2">
+        <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold mb-2">
           <Trees className="w-4 h-4" />
-          <span>Expedition Debrief</span>
+          <span className="text-gradient-emerald">Expedition Debrief</span>
         </div>
 
-        <h2 className="font-display font-bold text-3xl text-[var(--terra-ink)] mb-6">
+        <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-gradient-aurora mb-6">
           Session Summary Log
         </h2>
 
@@ -56,7 +55,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
             <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--terra-ink-tertiary)] font-bold mb-1">
               Real-World Time
             </div>
-            <div className="text-2xl font-chrono font-extrabold text-[var(--terra-ink)]">
+            <div className="text-3xl font-chrono font-extrabold text-[var(--terra-ink)]">
               {formatDetailedDuration(totalSessionSeconds)}
             </div>
           </div>
@@ -65,7 +64,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
             <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--terra-accent)] font-bold mb-1">
               Tasks Completed
             </div>
-            <div className="text-2xl font-chrono font-extrabold text-[var(--terra-accent)]">
+            <div className="text-3xl font-chrono font-extrabold text-gradient-emerald">
               {count}
             </div>
           </div>
@@ -90,11 +89,11 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
           </p>
         </div>
 
-        {/* Buttons */}
+        {/* Stylish Buttons */}
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={onStartNewSession}
-            className="flex-1 py-4 px-5 rounded-2xl terra-shutter-btn font-display font-bold text-sm flex items-center justify-center gap-2 cursor-pointer"
+            className="flex-1 py-4 px-6 rounded-full btn-stylish-primary text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg"
           >
             <Sparkles className="w-4 h-4" />
             <span>Begin New Expedition</span>
@@ -102,7 +101,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
 
           <button
             onClick={onClose}
-            className="py-4 px-6 rounded-2xl bg-[var(--terra-panel)] hover:bg-[var(--terra-panel-elevated)] border border-[var(--terra-border)] text-[var(--terra-ink)] font-display font-bold text-sm transition-colors cursor-pointer"
+            className="py-4 px-6 rounded-full btn-stylish-secondary text-sm cursor-pointer"
           >
             Close
           </button>

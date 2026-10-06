@@ -2,35 +2,33 @@
 
 @layer base {
   :root {
-    --terra-bg: #f5f4ee;
+    --terra-bg: #f6f5f0;
     --terra-panel: #ffffff;
     --terra-panel-elevated: #faf9f5;
-    --terra-card: rgba(255, 255, 255, 0.95);
+    --terra-card: rgba(255, 255, 255, 0.96);
     --terra-border: rgba(18, 30, 22, 0.1);
     --terra-border-strong: rgba(18, 30, 22, 0.22);
     --terra-ink: #0e1711;
     --terra-ink-secondary: #3d5243;
     --terra-ink-tertiary: #6b8272;
     --terra-accent: #059669;
-    --terra-accent-glow: rgba(5, 150, 105, 0.18);
-    --terra-amber: #d97706;
+    --terra-accent-glow: rgba(5, 150, 105, 0.22);
     --terra-topo: rgba(14, 23, 17, 0.04);
   }
 
   .dark {
-    --terra-bg: #090d0b;
-    --terra-panel: #111713;
-    --terra-panel-elevated: #161f1a;
-    --terra-card: rgba(17, 23, 19, 0.92);
+    --terra-bg: #070b08;
+    --terra-panel: #0f1611;
+    --terra-panel-elevated: #141e17;
+    --terra-card: rgba(15, 22, 17, 0.94);
     --terra-border: rgba(230, 250, 235, 0.08);
-    --terra-border-strong: rgba(230, 250, 235, 0.18);
+    --terra-border-strong: rgba(230, 250, 235, 0.2);
     --terra-ink: #f0f7f2;
     --terra-ink-secondary: #9cb5a3;
-    --terra-ink-tertiary: #5d7564;
+    --terra-ink-tertiary: #607967;
     --terra-accent: #10b981;
-    --terra-accent-glow: rgba(16, 185, 129, 0.24);
-    --terra-amber: #f59e0b;
-    --terra-topo: rgba(240, 247, 242, 0.03);
+    --terra-accent-glow: rgba(16, 185, 129, 0.32);
+    --terra-topo: rgba(240, 247, 242, 0.035);
   }
 
   body {
@@ -53,56 +51,163 @@
   }
 }
 
-/* Subtle Topographic Isoline Contour Background */
+/* Gradient Typography Utilities */
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-aurora {
+  background: linear-gradient(120deg, #6ee7b7 0%, #38bdf8 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-amber {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Topographic Isoline Contour Background */
 .terra-topo-bg {
   background-color: var(--terra-bg);
   background-image: 
-    radial-gradient(ellipse at 50% 0%, var(--terra-accent-glow) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, var(--terra-accent-glow) 0%, transparent 65%),
     linear-gradient(to right, var(--terra-topo) 1px, transparent 1px),
     linear-gradient(to bottom, var(--terra-topo) 1px, transparent 1px);
   background-size: 100% 100%, 48px 48px, 48px 48px;
   position: relative;
 }
 
-/* Tactile Expedition Console Card */
+/* Tactile Card */
 .terra-card {
   background-color: var(--terra-card);
   border: 1px solid var(--terra-border);
   box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 12px 36px -12px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 16px 40px -12px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .terra-card:hover {
   border-color: var(--terra-border-strong);
 }
 
-/* Hardware Shutter Action Button */
-.terra-shutter-btn {
-  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+/* ==========================================================
+   ULTRA-STYLISH CTAS & BUTTONS
+   ========================================================== */
+
+/* Stylish Primary Button */
+.btn-stylish-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #10b981 0%, #059669 55%, #047857 100%);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.12),
-    0 12px 28px -6px rgba(5, 150, 105, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    0 0 0 1px rgba(16, 185, 129, 0.2),
+    0 8px 24px -4px rgba(16, 185, 129, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.terra-shutter-btn:hover {
-  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.16),
-    0 18px 36px -8px rgba(16, 185, 129, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+.btn-stylish-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: left 0.6s ease;
 }
 
-.terra-shutter-btn:active {
+.btn-stylish-primary:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 
+    0 0 0 1px rgba(16, 185, 129, 0.4),
+    0 14px 32px -4px rgba(16, 185, 129, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.btn-stylish-primary:hover::before {
+  left: 100%;
+}
+
+.btn-stylish-primary:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+/* Stylish Hardware Camera Shutter Button (Click Photo Only) */
+.btn-stylish-camera {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #059669 0%, #047857 50%, #064e3b 100%);
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(52, 211, 153, 0.5);
+  box-shadow: 
+    0 0 0 3px rgba(16, 185, 129, 0.15),
+    0 10px 28px -4px rgba(5, 150, 105, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-stylish-camera:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(110, 231, 183, 0.8);
+  box-shadow: 
+    0 0 0 4px rgba(16, 185, 129, 0.3),
+    0 16px 36px -4px rgba(16, 185, 129, 0.65),
+    inset 0 1px 3px rgba(255, 255, 255, 0.6);
+}
+
+.btn-stylish-camera:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Stylish Secondary Frosted Glass Button */
+.btn-stylish-secondary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--terra-panel);
+  color: var(--terra-ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid var(--terra-border-strong);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-stylish-secondary:hover {
+  transform: translateY(-1.5px);
+  border-color: var(--terra-accent);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--terra-accent-glow);
+  color: var(--terra-accent);
+}
+
+.btn-stylish-secondary:active {
   transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 /* Flash snapshot effect */
