@@ -1,0 +1,11 @@
+{
+  "name": "TouchGrass",
+  "description": "Hacktoberfest 2026 Week 1: Get away from screens with open-weight AI outdoor challenges and live evidence verification.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
+
