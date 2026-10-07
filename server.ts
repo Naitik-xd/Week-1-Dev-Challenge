@@ -16,6 +16,73 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Increase payload limit to allow camera snapshots in base64
 app.use(express.json({ limit: '25mb' }));
 
+// Rate Limiter: Maximum 30 requests per 4-hour window per client IP
+const RATE_LIMIT_WINDOW_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+const MAX_REQUESTS_PER_WINDOW = 30;
+
+interface RateLimitRecord {
+  timestamps: number[];
+}
+
+const rateLimitMap = new Map<string, RateLimitRecord>();
+
+// Periodic sweep to prevent unbounded memory growth
+const cleanupInterval = setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of rateLimitMap.entries()) {
+    record.timestamps = record.timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+    if (record.timestamps.length === 0) {
+      rateLimitMap.delete(ip);
+    }
+  }
+}, 15 * 60 * 1000);
+if (cleanupInterval.unref) {
+  cleanupInterval.unref();
+}
+
+function getClientIp(req: Request): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string') {
+    return forwarded.split(',')[0].trim();
+  }
+  if (Array.isArray(forwarded) && forwarded.length > 0) {
+    return forwarded[0].trim();
+  }
+  const realIp = req.headers['x-real-ip'];
+  if (typeof realIp === 'string') {
+    return realIp.trim();
+  }
+  return req.socket.remoteAddress || '127.0.0.1';
+}
+
+function apiKeyRateLimiter(req: Request, res: Response, next: () => void) {
+  const clientIp = getClientIp(req);
+  const now = Date.now();
+
+  let record = rateLimitMap.get(clientIp);
+  if (!record) {
+    record = { timestamps: [] };
+    rateLimitMap.set(clientIp, record);
+  }
+
+  // Filter out timestamps outside the sliding 4-hour window
+  record.timestamps = record.timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+
+  if (record.timestamps.length >= MAX_REQUESTS_PER_WINDOW) {
+    const oldest = record.timestamps[0];
+    const retryAfterSeconds = Math.ceil((oldest + RATE_LIMIT_WINDOW_MS - now) / 1000);
+    res.setHeader('Retry-After', retryAfterSeconds);
+    return res.status(429).json({
+      error: 'Rate limit reached',
+      message: 'Too many requests. Maximum 30 requests allowed per 4-hour period.',
+      retryAfterSeconds,
+    });
+  }
+
+  record.timestamps.push(now);
+  next();
+}
+
 // Initialize Google GenAI client (Server-Side only)
 const apiKey = process.env.GEMINI_API_KEY || '';
 let aiClient: GoogleGenAI | null = null;
@@ -297,7 +364,7 @@ function getRandomFallbackChallenge(preferredCategory?: string) {
 }
 
 // API: Generate fresh outdoor challenge
-app.post('/api/challenge', async (req: Request, res: Response) => {
+app.post('/api/challenge', apiKeyRateLimiter, async (req: Request, res: Response) => {
   try {
     const { category, preferredCategory, excludeCategories } = req.body || {};
     const targetCategory = category || preferredCategory;
@@ -395,7 +462,7 @@ Return JSON only.`;
 });
 
 // API: Validate live camera evidence against the active task
-app.post('/api/validate', async (req: Request, res: Response) => {
+app.post('/api/validate', apiKeyRateLimiter, async (req: Request, res: Response) => {
   try {
     const { imageBase64, task, captureTimestamp, mimeType } = req.body || {};
 
@@ -542,7 +609,12 @@ async function startServer() {
   });
 }
 
-startServer().catch((err) => {
-  console.error('[TouchGrass] Fatal server startup error:', err);
-  process.exit(1);
-});
+// On Vercel, serverless function invokes exported app handler without calling listen
+if (!process.env.VERCEL) {
+  startServer().catch((err) => {
+    console.error('[TouchGrass] Fatal server startup error:', err);
+    process.exit(1);
+  });
+}
+
+export default app;

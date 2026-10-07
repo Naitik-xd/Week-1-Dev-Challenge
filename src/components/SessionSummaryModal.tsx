@@ -103,7 +103,7 @@ export const SessionSummaryModal: React.FC<SessionSummaryModalProps> = ({
             onClick={onClose}
             className="py-4 px-6 rounded-full btn-stylish-secondary text-sm cursor-pointer"
           >
-            Close
+            End Expedition
           </button>
         </div>
       </div>
