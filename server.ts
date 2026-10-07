@@ -16,6 +16,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Increase payload limit to allow camera snapshots in base64
 app.use(express.json({ limit: '25mb' }));
 
+// Set X-Robots-Tag to prevent search engine indexing
+app.use((_req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  next();
+});
+
 // Rate Limiter: Maximum 30 requests per 4-hour window per client IP
 const RATE_LIMIT_WINDOW_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
 const MAX_REQUESTS_PER_WINDOW = 30;
@@ -496,38 +502,44 @@ app.post('/api/validate', apiKeyRateLimiter, async (req: Request, res: Response)
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
 
     if (!aiClient) {
-      // If AI client is not configured, provide a simulated verification notice
-      console.warn('[TouchGrass API] GEMINI_API_KEY missing during validation. Falling back to optimistic prototype review.');
-      return res.json({
-        passed: true,
-        confidence: 0.88,
-        reason: 'Image accepted via prototype verification engine (AI API key not configured on server).',
-        feedback: 'Awesome job stepping away from your screen and capturing evidence outside!',
+      console.warn('[TouchGrass API] GEMINI_API_KEY missing during validation.');
+      return res.status(200).json({
+        passed: false,
+        confidence: 0,
+        reason: 'AI vision analyzer is awaiting GEMINI_API_KEY configuration on server.',
+        feedback: 'Please configure the GEMINI_API_KEY to enable Gemma 4 vision verification.',
         aiEnabled: false,
       });
     }
 
-    const evaluationPrompt = `You are the Gemma 4 evidence verification model for TouchGrass (Hacktoberfest 2026 Week 1).
-A user was assigned this outdoor challenge:
-TITLE: "${task.title}"
-DESCRIPTION: "${task.description}"
-CATEGORY: "${task.category || 'outdoors'}"
+    const evaluationPrompt = `You are the strict, discerning visual verification judge for TouchGrass (Hacktoberfest 2026 Week 1).
+The user was assigned this SPECIFIC outdoor mission:
+- MISSION TITLE: "${task.title}"
+- DESCRIPTION: "${task.description}"
+- CATEGORY: "${task.category || 'outdoors'}"
 
-EVALUATION GUIDELINES:
-1. Examine the provided photo captured by the user's device camera.
-2. Determine if the photo reasonably shows the requested outdoor element or genuine outdoor effort matching the task (e.g. foliage, bark, sky, shadows, stones, leaves, natural colors, outdoor textures).
-3. Be fair and encouraging: outdoor lighting, slight angles, and phone camera focus vary. If the user clearly went outside and found something matching the challenge, PASS them (passed: true).
-4. REJECT (passed: false) ONLY if:
-   - The photo is completely indoor (e.g. computer screen, television, keyboard, office ceiling, bedroom wall, furniture).
-   - The photo is completely solid color, completely black, completely blurry beyond recognition, or blocked by a finger.
-   - The subject is completely unrelated and non-natural (e.g. a car dashboard, indoor shoe).
-5. If rejected, do NOT be harsh or punitive. Give gentle, motivating guidance on how they can step outside and capture what the challenge asks for.
-6. Return strictly JSON in this format:
+STRICT EVALUATION INSTRUCTIONS:
+1. Examine the provided photo carefully. What is physically shown in this photo?
+2. MATCH REQUIREMENT: You MUST verify that the photo ACTUALLY depicts the requested subject of "${task.title}".
+   - If the task asks for Sky or Clouds: the photo MUST clearly depict the sky, clouds, or atmospheric light. If it depicts an indoor room, a floor, a desk, a plant leaf, or a selfie, REJECT (passed: false).
+   - If the task asks for Tree Bark: the photo MUST clearly show tree bark texture. If it shows grass, sky, or an indoor object, REJECT (passed: false).
+   - If the task asks for Sunlight Shadows: the photo MUST clearly show cast daylight shadows or silhouettes.
+   - If the task asks for Non-Green Color Hunt: the photo MUST clearly show an outdoor natural element with non-green colors (rust, yellow, purple, etc.).
+   - If the task asks for Moss / Sidewalk Micro-forest: the photo MUST clearly show moss or sidewalk plant growth.
+3. ABSOLUTE REJECTIONS (passed: false):
+   - Any indoor scene (room, screen, desk, ceiling, indoor floor, laptop, television, household furniture).
+   - Any random selfie or face that does not focus on the outdoor assignment.
+   - Any random or arbitrary photo that does NOT match what "${task.title}" specifically asked for.
+   - Any solid color, blurry indistinguishable smear, black/dark screen, or obstructed camera lens.
+4. ONLY PASS (passed: true) if the photo authentically and clearly shows what was requested in "${task.title}".
+
+OUTPUT FORMAT:
+Return strictly valid JSON in this exact structure:
 {
   "passed": true or false,
-  "confidence": 0.95,
-  "reason": "Clear factual assessment of what was seen in the photo",
-  "feedback": "Encouraging user-facing feedback"
+  "confidence": 0.0 to 1.0,
+  "reason": "1 factual sentence describing what is seen in the photo and why it does or does not match the challenge",
+  "feedback": "1-2 encouraging sentences telling the user whether it was accepted or what specific outdoor subject they need to photograph to pass"
 }`;
 
     const { response, model: usedModel } = await generateWithGemma4(aiClient, [
@@ -551,21 +563,19 @@ EVALUATION GUIDELINES:
     return res.json({
       passed: Boolean(result.passed),
       confidence: typeof result.confidence === 'number' ? Math.round(result.confidence * 100) / 100 : 0.85,
-      reason: result.reason || 'Evidence analyzed against outdoor criteria by Gemma 4.',
-      feedback: result.feedback || (result.passed ? 'Great find! Outdoor evidence confirmed.' : 'Try again with a clearer view of the natural subject.'),
+      reason: result.reason || 'Photo analyzed against challenge criteria by Gemma 4.',
+      feedback: result.feedback || (result.passed ? 'Great find! Outdoor evidence confirmed.' : 'The photo did not match this specific challenge. Please step outside and capture what was requested.'),
       aiEnabled: true,
       modelUsed: usedModel,
     });
   } catch (error: any) {
     console.error('[TouchGrass API] Error validating photo:', error?.message || error);
-    // Don't leave user hanging with a 500 error: provide informative graceful response
     return res.status(200).json({
-      passed: true,
-      confidence: 0.8,
-      reason: 'Photo captured outdoors during active session. Verified via secondary fallback validator.',
-      feedback: 'Nice job stepping away from the screen! Task recorded as complete.',
-      aiEnabled: false,
-      fallbackNotice: 'AI verification encountered temporary latency; photo accepted.',
+      passed: false,
+      confidence: 0,
+      reason: 'Could not clearly verify the required outdoor subject from this snapshot.',
+      feedback: 'The analyzer could not detect the specific target for this mission. Please ensure your camera has good lighting and clearly focuses on the subject.',
+      aiEnabled: true,
     });
   }
 });

@@ -106,6 +106,51 @@ export async function fetchOutdoorChallenge(options?: { category?: string }): Pr
   }
 }
 
+// Resize and optimize image to ensure fast transfer and stay well within Vercel's 4.5MB payload limit
+async function resizeImageForApi(base64: string, maxDimension = 1000, quality = 0.8): Promise<string> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !base64.startsWith('data:image')) {
+      resolve(base64);
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width);
+          width = maxDimension;
+        } else {
+          width = Math.round((width * maxDimension) / height);
+          height = maxDimension;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(base64);
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+      const compressed = canvas.toDataURL('image/jpeg', quality);
+      resolve(compressed);
+    };
+
+    img.onerror = () => {
+      resolve(base64);
+    };
+
+    img.src = base64;
+  });
+}
+
 export async function validateOutdoorEvidence(
   imageBase64: string,
   task: OutdoorChallenge
@@ -114,13 +159,16 @@ export async function validateOutdoorEvidence(
   const timeoutId = setTimeout(() => controller.abort(), 20000);
 
   try {
+    // Compress and downscale before sending to Vercel/server
+    const optimizedBase64 = await resizeImageForApi(imageBase64);
+
     const res = await fetch('/api/validate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        imageBase64,
+        imageBase64: optimizedBase64,
         task,
         captureTimestamp: Date.now(),
         mimeType: 'image/jpeg',
@@ -139,14 +187,13 @@ export async function validateOutdoorEvidence(
   } catch (error: any) {
     clearTimeout(timeoutId);
     console.warn('[TouchGrass Client] API validation error:', error?.message || error);
-    // Graceful fallback response: don't block the user from progressing if network flaked
+    // STRICT REJECTION on error: never falsely pass an unverified photo
     return {
-      passed: true,
-      confidence: 0.8,
-      reason: 'Photo captured live with active session timer. Verified by local safety fallback.',
-      feedback: 'Nice observation outside! Your time spent outdoors has been recorded.',
+      passed: false,
+      confidence: 0,
+      reason: 'Could not clearly verify the outdoor subject from this image.',
+      feedback: 'Verification could not confirm the required outdoor subject. Please take a clear photo outside focusing on the assignment.',
       aiEnabled: false,
-      fallbackNotice: 'Network was briefly interrupted; task marked as successfully completed.',
     };
   }
 }

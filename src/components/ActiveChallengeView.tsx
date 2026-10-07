@@ -39,6 +39,7 @@ export const ActiveChallengeView: React.FC<ActiveChallengeViewProps> = ({
   sessionSeconds,
   taskSeconds,
   completedCount,
+  onOpenCapture,
   onDirectNativeUpload,
   onSkipChallenge,
   onEndSession,
@@ -48,6 +49,21 @@ export const ActiveChallengeView: React.FC<ActiveChallengeViewProps> = ({
   const cameraOnlyInputRef = useRef<HTMLInputElement | null>(null);
 
   const cat = CATEGORY_METADATA[challenge.category] || { label: 'Field Expedition', code: 'EXP-01', icon: '🌱' };
+
+  // Detect mobile device vs Windows/Desktop
+  const isMobile =
+    typeof navigator !== 'undefined' &&
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  const handleCameraTrigger = () => {
+    if (isMobile && cameraOnlyInputRef.current) {
+      // On mobile (Android / iOS), invoke the native mobile camera app
+      cameraOnlyInputRef.current.click();
+    } else {
+      // On Windows / Mac / Desktop, launch the live webcam viewfinder
+      onOpenCapture();
+    }
+  };
 
   const handleCameraPhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -237,7 +253,7 @@ export const ActiveChallengeView: React.FC<ActiveChallengeViewProps> = ({
         {/* ============================================================== */}
         <div className="flex flex-col items-center justify-center pt-2">
           <button
-            onClick={() => cameraOnlyInputRef.current?.click()}
+            onClick={handleCameraTrigger}
             className="w-full sm:w-auto py-5 px-10 btn-stylish-camera text-base sm:text-xl flex items-center justify-center gap-3.5 shadow-2xl cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">

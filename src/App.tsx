@@ -291,7 +291,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col terra-topo-bg text-[var(--terra-ink)] selection:bg-[var(--terra-accent)] selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col terra-topo-bg text-[var(--terra-ink)] selection:bg-[var(--terra-accent)] selection:text-white">
 
       {/* Main Navigation */}
       <Navbar
